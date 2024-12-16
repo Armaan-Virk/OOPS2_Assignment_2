@@ -1,0 +1,74 @@
+﻿@page "/flights"
+@inject Data.FlightManager FlightManager
+@using Assign2.Data
+
+
+<div class="container mt-5">
+    <h2>Search Flights</h2>
+    <form class="row g-3">
+        <div class="col-md-4">
+            <label for="from" class="form-label">From</label>
+            <input id="from" @bind="From" class="form-control" placeholder="Enter origin" />
+        </div>
+        <div class="col-md-4">
+            <label for="to" class="form-label">To</label>
+            <input id="to" @bind="To" class="form-control" placeholder="Enter destination" />
+        </div>
+        <div class="col-md-4">
+            <label for="weekday" class="form-label">Weekday</label>
+            <input id="weekday" @bind="Weekday" class="form-control" placeholder="Enter weekday" />
+        </div>
+        <div class="col-12">
+            <button type="button" @onclick="SearchFlights" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+
+    <h4 class="mt-5">Flight Results</h4>
+    @if (Flights.Any())
+    {
+        <table class="table table-striped mt-3">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Airline</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Weekday</th>
+                    <th>Seats</th>
+                    <th>Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var flight in Flights)
+                {
+                    <tr>
+                        <td>@flight.Code</td>
+                        <td>@flight.Airline</td>
+                        <td>@flight.From</td>
+                        <td>@flight.To</td>
+                        <td>@flight.Weekday</td>
+                        <td>@flight.Seats</td>
+                        <td>@flight.CostPerSeat</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No flights found.</p>
+    }
+</div>
+
+@code {
+    private string From;
+    private string To;
+    private string Weekday;
+    private List<Assign2.Data.Flight> Flights = new();
+
+    private async Task SearchFlights()
+    {
+        Flights = FlightManager.FindFlights(From, To, Weekday);
+    }
+}
+
